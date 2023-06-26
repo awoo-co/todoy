@@ -18,8 +18,8 @@ function addTask(event) {
       // Clear the input field
       input.value = "";
   
-      // Save the updated list to local storage
-      saveListToStorage();
+      // Save the updated data to local storage
+      saveDataToStorage();
     }
   }
   
@@ -34,8 +34,8 @@ function addTask(event) {
       // Remove the task from the list
       todoList.removeChild(selectedTask);
   
-      // Save the updated list to local storage
-      saveListToStorage();
+      // Save the updated data to local storage
+      saveDataToStorage();
     }
   }
   
@@ -44,8 +44,8 @@ function addTask(event) {
     const todoList = document.getElementById("todoList");
     todoList.innerHTML = "";
   
-    // Save the updated list to local storage
-    saveListToStorage();
+    // Save the updated data to local storage
+    saveDataToStorage();
   }
   
   // Function to add a new tab
@@ -66,8 +66,8 @@ function addTask(event) {
     const todoList = document.getElementById("todoList");
     todoList.innerHTML = "";
   
-    // Save the updated list to local storage
-    saveListToStorage();
+    // Save the updated data to local storage
+    saveDataToStorage();
   }
   
   // Function to switch to the selected tab
@@ -83,12 +83,12 @@ function addTask(event) {
     // Add the "selected" class to the clicked tab
     selectedTab.classList.add("selected");
   
-    // Save the updated list to local storage
-    saveListToStorage();
+    // Save the updated data to local storage
+    saveDataToStorage();
   }
   
-  // Function to save the list to local storage
-  function saveListToStorage() {
+  // Function to save the list and tabs to local storage
+  function saveDataToStorage() {
     const tabList = document.getElementById("tabList");
     const todoList = document.getElementById("todoList");
   
@@ -110,25 +110,29 @@ function addTask(event) {
       tasks.push(listItem.textContent);
     }
   
-    // Save the tasks array and selected tab index to local storage
+    // Save the tasks array, selected tab index, and tab names to local storage
     localStorage.setItem("tasks", JSON.stringify(tasks));
     localStorage.setItem("selectedTabIndex", selectedTabIndex);
+    localStorage.setItem("tabNames", JSON.stringify(getTabNames()));
   }
   
-  // Function to load the list from local storage
-  function loadListFromStorage() {
+  // Function to load the list and tabs from local storage
+  function loadDataFromStorage() {
     const tasks = localStorage.getItem("tasks");
     const selectedTabIndex = localStorage.getItem("selectedTabIndex");
+    const tabNames = localStorage.getItem("tabNames");
   
-    if (tasks && selectedTabIndex !== null) {
+    if (tasks && selectedTabIndex !== null && tabNames) {
       const todoList = document.getElementById("todoList");
       const tabList = document.getElementById("tabList");
   
-      // Clear the to-do list
+      // Clear the to-do list and tabs
       todoList.innerHTML = "";
+      tabList.innerHTML = "";
   
-      // Parse the stored tasks array
+      // Parse the stored tasks array and tab names
       const parsedTasks = JSON.parse(tasks);
+      const parsedTabNames = JSON.parse(tabNames);
   
       // Create list items for each task and add them to the to-do list
       parsedTasks.forEach(task => {
@@ -137,12 +141,32 @@ function addTask(event) {
         todoList.appendChild(listItem);
       });
   
+      // Create tabs based on the stored tab names
+      parsedTabNames.forEach(tabName => {
+        const tab = document.createElement("li");
+        tab.textContent = tabName;
+        tab.addEventListener("click", switchTab);
+        tabList.appendChild(tab);
+      });
+  
       // Set the selected tab based on the stored index
       if (selectedTabIndex >= 0 && selectedTabIndex < tabList.children.length) {
         const selectedTab = tabList.children[selectedTabIndex];
         selectedTab.classList.add("selected");
       }
     }
+  }
+  
+  // Function to get an array of tab names
+  function getTabNames() {
+    const tabList = document.getElementById("tabList");
+    const tabNames = [];
+  
+    for (let i = 0; i < tabList.children.length; i++) {
+      tabNames.push(tabList.children[i].textContent);
+    }
+  
+    return tabNames;
   }
   
   // Attach event listeners
@@ -163,6 +187,6 @@ function addTask(event) {
     tabList.children[i].addEventListener("click", switchTab);
   }
   
-  // Load the list from local storage on page load
-  window.addEventListener("load", loadListFromStorage);
+  // Load the list and tabs from local storage on page load
+  window.addEventListener("load", loadDataFromStorage);
   
