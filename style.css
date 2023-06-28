@@ -1,39 +1,82 @@
-/* Add some basic styling to the todo list */
 body {
-  background-color: white;  
+  background-color: #f2f2f2;
   font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
+  margin: 0;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+}
+
+#new-todo {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+button {
+  padding: 10px 20px;
+  margin-right: 10px;
+}
+
+#todo-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+#todo-list li {
+  margin-bottom: 10px;
+  cursor: pointer;
+  background-color: #fff;
+  border-radius: 4px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.3s ease;
+}
+
+#todo-list li.completed {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+#todo-list li:hover {
+  background-color: #f2f2f2;
+}
+
+#todo-list li .remove-button {
+  color: #ff4d4d;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 0.3s ease;
+  opacity: 0;
+}
+
+#todo-list li:hover .remove-button {
+  opacity: 1;
+}
+
+@keyframes removeAnimation {
+  0% {
+    transform: scale(1);
+    opacity: 1;
   }
-  
-  h1 {
-    text-align: center;
+  50% {
+    transform: scale(0.8);
+    opacity: 0.5;
   }
-  
-  #new-todo {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
+  100% {
+    transform: scale(0);
+    opacity: 0;
   }
-  
-  button {
-    padding: 10px 20px;
-    margin-right: 10px;
-  }
-  
-  #todo-list {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  #todo-list li {
-    margin-bottom: 10px;
-    cursor: pointer;
-  }
-  
-  #todo-list li.completed {
-    text-decoration: line-through;
-  }
-  
-  
+}
+
+.removing {
+  animation: removeAnimation 0.3s ease;
+  transform-origin: top right;
+}

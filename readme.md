@@ -1,2 +1,2 @@
 # todo-list
-still in beta
+almost done

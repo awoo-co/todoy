@@ -21,6 +21,15 @@ function renderTodos() {
       li.classList.add('completed');
     }
 
+    const removeButton = document.createElement('button');
+    removeButton.innerText = 'Remove';
+    removeButton.classList.add('remove-button');
+    removeButton.addEventListener('click', () => {
+      removeTodo(index);
+    });
+
+    li.appendChild(removeButton);
+
     li.addEventListener('click', () => {
       toggleTodoCompletion(index);
     });
@@ -52,6 +61,13 @@ function toggleTodoCompletion(index) {
   renderTodos();
 }
 
+// Function to remove a todo
+function removeTodo(index) {
+  todos.splice(index, 1);
+  saveTodos();
+  renderTodos();
+}
+
 // Function to remove all todos
 function removeAll() {
   todos = [];
@@ -63,3 +79,7 @@ function removeAll() {
 function saveTodos() {
   localStorage.setItem('todos', JSON.stringify(todos));
 }
+
+// Add event listeners to buttons
+document.getElementById('add-button').addEventListener('click', addTodo);
+document.getElementById('remove-all-button').addEventListener('click', removeAll);
