@@ -7,12 +7,37 @@
 <body>
   <h1>Todo List</h1>
 
-  <input type="text" id="new-todo" placeholder="Add a new todo">
-  <button id="add-button">Add</button>
-  <button id="remove-all-button">Remove All</button>
-  
+  <div class="tab">
+    <button class="tablinks" onclick="openTab(event, 'Home')">Home</button>
+    <button class="tablinks" onclick="openTab(event, 'Work')">Work</button>
+    <button class="tablinks" onclick="openTab(event, 'Personal')">Personal</button>
+  </div>
 
-  <ul id="todo-list"></ul>
+  <div id="Home" class="tabcontent">
+    <input type="text" id="new-todo-home" placeholder="Add a new todo">
+    <button id="add-button-home" onclick="addTodo('Home')">Add</button>
+    <button id="remove-all-button-home" onclick="removeAll('Home')">Remove All</button>
+    <ul id="todo-list-home"></ul>
+  </div>
+
+  <div id="Work" class="tabcontent">
+    <input type="text" id="new-todo-work" placeholder="Add a new todo">
+    <button id="add-button-work" onclick="addTodo('Work')">Add</button>
+    <button id="remove-all-button-work" onclick="removeAll('Work')">Remove All</button>
+    <ul id="todo-list-work"></ul>
+  </div>
+
+  <div id="Personal" class="tabcontent">
+    <input type="text" id="new-todo-personal" placeholder="Add a new todo">
+    <button id="add-button-personal" onclick="addTodo('Personal')">Add</button>
+    <button id="remove-all-button-personal" onclick="removeAll('Personal')">Remove All</button>
+    <ul id="todo-list-personal"></ul>
+  </div>
+
+  <div>
+    <input type="text" id="new-tab-name" placeholder="New tab name">
+    <button onclick="addTab()">Add Tab</button>
+  </div>
 
   <script src="script.js"></script>
 </body>
