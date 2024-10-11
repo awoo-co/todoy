@@ -21,25 +21,48 @@ function addTab() {
   const newTabName = document.getElementById('new-tab-name').value.trim();
   if (newTabName === '') return;
 
+  let customTabs = getCustomTabs(); // Get the list of custom tabs from localStorage
+  if (!customTabs.includes(newTabName)) {
+    customTabs.push(newTabName);
+    saveCustomTabs(customTabs); // Save updated custom tabs to localStorage
+  }
+
+  createTabElements(newTabName); // Create the new tab and content
+  document.getElementById('new-tab-name').value = '';
+}
+
+// Function to save custom tabs to local storage
+function saveCustomTabs(tabs) {
+  localStorage.setItem('customTabs', JSON.stringify(tabs));
+}
+
+// Function to get custom tabs from local storage
+function getCustomTabs() {
+  let tabs = localStorage.getItem('customTabs');
+  return tabs ? JSON.parse(tabs) : [];
+}
+
+// Function to create new tab elements dynamically
+function createTabElements(tabName) {
+  // Create the tab button
   const tabContainer = document.querySelector('.tab');
   const newTabButton = document.createElement('button');
   newTabButton.className = 'tablinks';
-  newTabButton.innerText = newTabName;
-  newTabButton.onclick = (event) => openTab(event, newTabName);
+  newTabButton.innerText = tabName;
+  newTabButton.onclick = (event) => openTab(event, tabName);
   tabContainer.appendChild(newTabButton);
 
+  // Create the tab content
   const newTabContent = document.createElement('div');
-  newTabContent.id = newTabName;
+  newTabContent.id = tabName;
   newTabContent.className = 'tabcontent';
   newTabContent.innerHTML = `
-    <input type="text" id="new-todo-${newTabName.toLowerCase()}" placeholder="Add a new todo">
-    <button onclick="addTodo('${newTabName}')">Add</button>
-    <button onclick="removeAll('${newTabName}')">Remove All</button>
-    <ul id="todo-list-${newTabName.toLowerCase()}"></ul>
+    <input type="text" id="new-todo-${tabName.toLowerCase()}" placeholder="Add a new todo">
+    <button onclick="addTodo('${tabName}')">Add</button>
+    <button onclick="removeAll('${tabName}')">Remove All</button>
+    <ul id="todo-list-${tabName.toLowerCase()}"></ul>
   `;
   document.body.appendChild(newTabContent);
-
-  document.getElementById('new-tab-name').value = '';
 }
 
 // Function to add a new todo
@@ -135,4 +158,34 @@ function loadTodos(tab) {
 // Open the default tab (Home) on load
 document.addEventListener('DOMContentLoaded', (event) => {
   document.querySelector('.tab button').click();
+
+  let customTabs = getCustomTabs();
+  customTabs.forEach(tab => {
+    createTabElements(tab);
+  });
 });
+
+// Sync tabs and todos across browser windows
+window.addEventListener('storage', function(event) {
+  if (event.key === 'customTabs') {
+    let updatedTabs = JSON.parse(event.newValue);
+    document.querySelectorAll('.tablinks').forEach(button => button.remove());
+    updatedTabs.forEach(tab => createTabElements(tab));
+  } else if (event.key.startsWith('todos-')) {
+    const tab = event.key.replace('todos-', '');
+    renderTodos(tab);
+  }
+});
+
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => {
+        console.log('Service Worker registered with scope:', registration.scope);
+      })
+      .catch(error => {
+        console.log('Service Worker registration failed:', error);
+      });
+  });
+}
