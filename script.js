@@ -1,3 +1,16 @@
+// Register the service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => {
+        console.log('Service Worker registered with scope:', registration.scope);
+      })
+      .catch(error => {
+        console.log('Service Worker registration failed:', error);
+      });
+  });
+}
+
 // Function to open a tab
 function openTab(evt, tabName) {
   var i, tabcontent, tablinks;
@@ -51,6 +64,15 @@ function createTabElements(tabName) {
   newTabButton.innerText = tabName;
   newTabButton.onclick = (event) => openTab(event, tabName);
   tabContainer.appendChild(newTabButton);
+
+  // Create a delete button for the tab
+  const deleteButton = document.createElement('button');
+  deleteButton.innerText = 'Delete';
+  deleteButton.onclick = (event) => {
+    event.stopPropagation(); // Prevent the tab from opening when clicking delete
+    deleteTab(tabName);
+  };
+  tabContainer.appendChild(deleteButton);
 
   // Create the tab content
   const newTabContent = document.createElement('div');
@@ -155,6 +177,28 @@ function loadTodos(tab) {
   renderTodos(tab);
 }
 
+// Function to delete a tab
+function deleteTab(tabName) {
+  // Remove the tab button
+  const tabLinks = document.querySelectorAll('.tablinks');
+  tabLinks.forEach(tabLink => {
+    if (tabLink.innerText === tabName) {
+      tabLink.remove();
+    }
+  });
+
+  // Remove the tab content
+  const tabContent = document.getElementById(tabName);
+  if (tabContent) {
+    tabContent.remove();
+  }
+
+  // Update custom tabs in local storage
+  let customTabs = getCustomTabs();
+  customTabs = customTabs.filter(tab => tab !== tabName); // Remove the deleted tab
+  saveCustomTabs(customTabs);
+}
+
 // Open the default tab (Home) on load
 document.addEventListener('DOMContentLoaded', (event) => {
   document.querySelector('.tab button').click();
@@ -176,16 +220,3 @@ window.addEventListener('storage', function(event) {
     renderTodos(tab);
   }
 });
-
-
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(registration => {
-        console.log('Service Worker registered with scope:', registration.scope);
-      })
-      .catch(error => {
-        console.log('Service Worker registration failed:', error);
-      });
-  });
-}
