@@ -1,3 +1,2 @@
-# todoy-list-beta
-## beta version of todoy
-## this version of the beta of todoy is remodeling to use node.js
+# todoy-list
+# todo list app in node.js express
